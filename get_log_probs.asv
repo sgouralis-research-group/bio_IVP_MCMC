@@ -1,0 +1,49 @@
+function log_P = get_log_probs(g,h,y,params)
+% log_P = log( post,like,priors )
+
+if nargin<1
+    log_P = 8; % posterior, likelihood, priors: Q,P,m,a,y,h
+    return
+end
+
+% compute the log-posterior
+
+log_P = nan(get_log_probs,1);
+
+%% Likelihood
+if params.HMC_RATTLE_constraint_error < params.HMC_RATTLE_constraint_tolerance
+    log_P(2) = 0;  % constraint satisfied within tolerance
+else
+    log_P(2) = -Inf; % constraint not satisfied
+end
+
+
+%% Priors
+%TODO vectoriz
+% (Q)
+log_P(3) = (params.g_prior_phi  - 1) .* log(g) - g .* params.g_prior_phi ./ params.g_prior_psi(1);
+
+log_P(3) = (params.g_prior_phi(1)  - 1)* log(g(1)) - ...
+    g(1) * params.g_prior_phi(1) / params.g_prior_psi(1);
+% (P)
+log_P(4) = (params.g_prior_phi(2)  - 1)* log(g(2)) - ...
+    g(2) * params.g_prior_phi(2) / params.g_prior_psi(2);
+% (m)
+log_P(5) = (params.g_prior_phi(3)  - 1)* log(g(3)) - ...
+    g(3) * params.g_prior_phi(3) / params.g_prior_psi(3);
+% (a)
+log_P(6) = (params.g_prior_phi(4)  - 1)* log(g(4)) - ...
+    g(4) * params.g_prior_phi(4) / params.g_prior_psi(4);
+% (y's)
+x = get_x(g,params.t,params.t_min,params.t_max);
+rho = x(:,2);
+log_P(7) = -sum( log(y), "all" ) + ( (params.N * params.K) / 2 ) * log(h/(2*pi)) - (h/2) * ( sum( log( y ./ rho ).^2 , "all" ) );
+% (h)
+log_P(8) = (params.h_prior_phi  - 1)* log(h) - ...
+    h * params.h_prior_phi / params.h_prior_psi;
+
+
+%% Posterior
+log_P(1) = sum(log_P(2:end));
+
+
