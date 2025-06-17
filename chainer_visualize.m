@@ -31,8 +31,8 @@ if isempty(Gim)
     ylabel(ax_q,['nutrient density (',chain.params.units.conc,')'])
 
     Gim.p  = line(ax_p,Gim.sample_t,nan(size(Gim.sample_t)));
-    Gim.c1 = line(ax_p,Gim.sample_t,nan(size(Gim.sample_t)),'linestyle','--');
-    Gim.c2 = line(ax_p,Gim.sample_t,nan(size(Gim.sample_t)),'linestyle','--');
+    Gim.c1 = line(ax_p,Gim.sample_t,nan(size(Gim.sample_t)),'linestyle','--','color',Gim.p.Color);
+    Gim.c2 = line(ax_p,Gim.sample_t,nan(size(Gim.sample_t)),'linestyle','--','color',Gim.p.Color);
     xlim(ax_p,[chain.params.t_min chain.params.t_max]+0.1*(chain.params.t_max-chain.params.t_min)*[-1 +1])
     xline(ax_p,chain.params.t_min,'--','label','t_{min}','LabelOrientation','horizontal','LabelHorizontalAlignment','right')
     xline(ax_p,chain.params.t_max,'--','label','t_{max}','LabelOrientation','horizontal','LabelHorizontalAlignment','left')

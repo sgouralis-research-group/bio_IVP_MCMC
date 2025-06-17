@@ -6,10 +6,9 @@ mcmc_batch_size = 500;
 while true % expand forever unless killed manually
     
     %here is a chain size stop criteria
-    if chain.i(end) >= 100000
+    if chain.i(end) >= 10000
         break
     end
-      
 
     chain = chainer_main(chain,[],[],true,[]); % resets chain's acceptance record
     
@@ -24,6 +23,5 @@ while true % expand forever unless killed manually
     save(save_file,'chain','save_file') 
     disp(['SAVED: ', save_file])
 
-   
 
 end    

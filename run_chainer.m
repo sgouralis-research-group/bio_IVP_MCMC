@@ -14,23 +14,28 @@ opts.units_conc = units_conc;
 opts.t_min = t_min;
 opts.t_max = t_max; 
 opts.t = t;
-opts.z = z;
+opts.z = z; 
 opts.v = v;
 opts.K = K;
-
 if exist('ground','var')
     opts.ground = ground;
 end
+% choices: linear,quadratic
+opts.constraint_type = "quadratic";
 
 
 %% init chain
 chain = chainer_main([],0,opts,true,[]);
+
+
 clear opts % clear leftovers
+
 chain_temp = chain; % store a temporary copy for debugging 
 save(save_file,'chain','save_file') % save chain for future processing
 disp(['SAVED: ', save_file])
 
 %% expand chain
+
 run_expander
 
 

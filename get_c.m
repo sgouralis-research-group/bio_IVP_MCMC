@@ -8,6 +8,6 @@ function c = get_c(y,params)
         case "quadratic"
             % sample mean and second moment
             c = [ sum(y,2)-params.K*params.z     ; ...
-                params.z .*(sum(y.^2,2)./params.v-params.K)/2 ];
+                params.z .*(sum((y.^2)./params.v,2)-params.K)/2 ];
     end
 end

@@ -24,6 +24,7 @@ if d_length == 0
 
     % MCMC
     chain.params = chainer_init_params(opts);
+    % chain.params = SA_chainer_init_params(opts);
     chain.length = 1;
     chain.stride = 1;
     chain.ledger = nan(0,2); % total wall time without Initialization

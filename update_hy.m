@@ -30,9 +30,7 @@ sample_energy = get_Hamiltonian_energy(sample_position,sample_momentum,dyn_param
 propos_energy = get_Hamiltonian_energy(propos_position,propos_momentum,dyn_params);
 logR = sample_energy - propos_energy;
 
-u = rand;
-
-if log(u) <= logR && isequal(propos_position,abs(propos_position))
+if isequal(propos_position,abs(propos_position)) && log(rand) <= logR 
     
     % % check constraint satisfaction
     % params.HMC_RATTLE_constraint_error = max(abs(get_c(propos_position,params)));
@@ -47,9 +45,7 @@ rec(2) = rec(2) + 1;
 
 %% sample h with direct sampling
 
-A =  ( params.N * params.K ) /2 + params.h_prior_phi;
-B = get_B(y,dyn_params.rho,params);
-h = gamrnd(A,B);
+h = gamrnd( (params.N * params.K)/2 + params.h_prior_phi,get_B(y,dyn_params.rho,params) );
 % h = params.ground.h;
 
 
@@ -64,11 +60,12 @@ function [q,p] = integrate_Hamiltonian(q,p,params)
 % params = struct of parameters
 
 lambda_q = zeros(params.num_constraints,1);
-p = params.HMC_Minv * p;
+
+p = params.HMC_Minv .* p;
 for l=1:params.HMC_L
     [q,p,lambda_q] = one_step_RATTLE(q,p,lambda_q,params);
 end
-p = params.HMC_M * p;
+p = params.HMC_M .* p;
 
 
 end
@@ -92,11 +89,11 @@ function V = get_potential_energy(y, params)
 % This needs to be changed or a switch added depending on the problem
 
 % recover params
-y_mat = reshape(y,params.K,params.N)';
+y = reshape(y,params.K,params.N)';
 A = ( params.N * params.K ) / 2 + params.h_prior_phi;
-B = get_B(y_mat,params.rho,params);
+B = get_B(y,params.rho,params);
 
-V = A * log(1/B) + sum( log(y) );
+V = sum( log(y) , 'all' ) - A*log(B);
 end
 
 %%
@@ -160,5 +157,3 @@ function grad_V = get_grad_V(y,dyn_params)
   grad_V = (A*B*rep_rho./y) .* log(y./rep_rho) + 1./y;
 
 end
-    
-    

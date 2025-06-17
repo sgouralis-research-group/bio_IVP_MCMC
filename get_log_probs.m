@@ -20,7 +20,8 @@ end
 
 %% Priors
 % (Q,P,m,a)
-log_P(3) = sum((params.g_prior_phi  - 1) .* log(g)) - sum(g .* params.g_prior_phi ./ params.g_prior_psi);
+log_P(3) = sum((params.g_prior_phi-1) .* log(g)) - sum(g .* params.g_prior_phi ./ params.g_prior_psi);
+
 % (y's)
 x = get_x(g,params.t,params.t_min,params.t_max);
 rho = x(:,2);

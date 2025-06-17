@@ -40,30 +40,28 @@ params.g_prior_phi = nan(4,1);
 params.g_prior_psi = nan(4,1);
 
 % Q
-params.g_prior_phi(1) = 10;
-params.g_prior_psi(1) = 13e4; % [conc]
+params.g_prior_phi(1) = 2;
+params.g_prior_psi(1) = 1.3e-1;   % [conc]
 % P
-params.g_prior_phi(2) = 10;
-params.g_prior_psi(2) = 13;   % [conc]
+params.g_prior_phi(2) = 2;
+params.g_prior_psi(2) = 0.3e-3; % [conc]
 % m
-params.g_prior_phi(3) = 10;
-params.g_prior_psi(3) = 2;    % 1/[time]
+params.g_prior_phi(3) = 2;
+params.g_prior_psi(3) = .5;    % 1/[time]
 % a
-params.g_prior_phi(4) = 10;
-params.g_prior_psi(4) = 5.5e-6; % 1/([conc]*[time])
+params.g_prior_phi(4) = 2;
+params.g_prior_psi(4) = 10; % 1/([conc]*[time])
 
 % observational parameters
 params.h_prior_phi = 250;
 params.h_prior_psi = 25; % [1]
 
 %% MESS sampling variance of (Q,P,m,a)
-params.T_sig = [.05;.05;.05;.05];
-params.M  = 4; % number of parameters
+params.T_sig = 0.05*ones(4,1);
 params.T_rep = 3; % number of internal repetitions
 
 %% HMC parameters
-% params.constraint_type = "linear"; % constrain mean
-params.constraint_type = "quadratic"; % constrain mean and variance
+params.constraint_type = opts.constraint_type; 
 params.fsolve_options = optimset('Display','off', ...
                                  'TolFun', 1e-10, ...
                                  'Algorithm', 'levenberg-marquardt');
@@ -71,14 +69,14 @@ params.initial_constraint_tolerance = 1e-6;
 switch params.constraint_type
     case "linear"
         params.num_constraints = params.N;
-        params.HMC_step_size = 1e-3; % RATTLE step size
+        params.HMC_step_size = 1e-9; % RATTLE step size
     case "quadratic"
         params.num_constraints = 2*params.N;
-        params.HMC_step_size = 2e-3; % RATTLE step size
+        params.HMC_step_size = 2e-9; % RATTLE step size
 end
 params.HMC_L = 20; % number of RATTLE steps
-params.HMC_M    = kron(diag(1./params.z),eye(params.K)); % mass matrix
-params.HMC_Minv = kron(diag(params.z),eye(params.K)); % inverse mass matrix
+params.HMC_M    = 1e-6*kron(1./params.z,ones(params.K,1)); % mass matrix
+params.HMC_Minv = 1e+6*kron(   params.z,ones(params.K,1)); % inverse mass matrix
 params.HMC_RATTLE_constraint_tolerance = 1e-8;
 params.HMC_RATTLE_constraint_error = 0;
 params.HMC_RATTLE_tangency_error = 0;
@@ -90,5 +88,4 @@ params.HMC_RATTLE_tangency_error = 0;
 if isfield(opts,'ground')
     params.ground = opts.ground;
 end
-
 
