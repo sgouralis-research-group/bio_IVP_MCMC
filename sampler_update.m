@@ -3,7 +3,7 @@ function sample = sampler_update( sample, params )
 %% update counter
 sample.i = sample.i + 1;
 
-%% No random sweep since only 2 cases
+%% Gibbs updates
   
 [sample.h,sample.g,sample.rec(:,1)] = update_hg( ...
           sample.g,sample.rec(:,1), sample.y,params);
